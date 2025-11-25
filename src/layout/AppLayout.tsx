@@ -11,6 +11,7 @@ type AppLayoutProps = {
 const NAV_LINKS = [
   { to: '/dashboard', label: 'ダッシュボード' },
   { to: '/players', label: 'プレイヤー' },
+  { to: '/metrics', label: 'メトリクス' },
   { to: '/admin/metrics', label: '管理' },
   { to: '/profile', label: 'プロフィール' },
 ];

@@ -1,54 +1,33 @@
 Minecraft Server Monitoring Dashboard (frontend mock)
-====================================================
+=====================================================
 
-React/Vite で作る「しまえなが」テーマの Minecraft サーバーダッシュボードです。現状はフロントのみで、モックデータで動作します（バックエンドや Minecraft サーバーは未実装）。
+React + Vite で作る「しまえなが」テーマの Minecraft サーバーダッシュボード。現状はフロントのみで、モックデータをスタブ API として返します（本番は Go API / RCON を想定）。
 
 主な機能
+- サーバーステータス表示（オンライン/オフライン、MOTD、バージョン、人数）
+- オンライン/オフラインプレイヤー一覧
+- scoreboard メトリクスのランキング
+- プレイヤー詳細（スコア、ログイン履歴、日次プレイ時間）
+- 管理画面でのメトリクスモック追加/有効化
+- 新規: 日次プレイ時間の全プレイヤー推移グラフ（/metrics/playtime、日/週/月単位切替）
+- 新規: 各メトリクスの全プレイヤー推移グラフ（/metrics/:id/history または objective 名で指定可、日/週/月単位切替）
 
-- サーバーステータス、オンライン/オフラインプレイヤー表示
-- scoreboard メトリクスランキング、プレイヤー詳細/プロフィール
-- 14 日分のプレイ時間チャート
-- 管理画面（objective のモック追加/有効切替）
+Docker での実行（フロント単体・モック利用）
+1) ビルド: `docker build -f Dockerfile.frontend -t minecraft-dashboard-frontend .`
+2) 実行: `docker run -d -p 5173:80 --name mc-dashboard -e VITE_USE_MOCK=true minecraft-dashboard-frontend`
+3) ブラウザ: http://localhost:5173
+   - 実 API を見る場合は `-e VITE_USE_MOCK=false -e VITE_API_BASE_URL=https://your-api.example.com/api` を追加。
 
-クイックスタート (Docker / フロント単体)
+開発（ローカル）
+1) 依存インストール: `npm install`
+2) 開発サーバー: `npm run dev`
+   - Vite の dev サーバーが `/api/*` をモックで返します。
+3) ビルド: `npm run build`（環境によっては権限設定が必要な場合があります）
 
-1. イメージビルド  
-   `docker build -f Dockerfile.frontend -t minecraft-dashboard-frontend .`
-2. コンテナ起動  
-   `docker run -d -p 5173:80 --name mc-dashboard minecraft-dashboard-frontend`
-3. ブラウザで確認  
-   http://localhost:5173
+ルート
+- `/login`, `/dashboard`, `/players`, `/players/:id`, `/metrics`, `/metrics/playtime`, `/metrics/:id/history`, `/admin/metrics`, `/profile`, `/users/:id`
 
-補足
-
-- ビルド時に `--build-arg VITE_API_BASE_URL=...` / `--build-arg VITE_PORT=...` で API エンドポイントやビルド時ポートを上書きできます（デフォルトは `http://localhost:8080/api` と 4173）。
-- 現状はモックデータを静的に埋め込んだフロントのみです。実 API と接続する場合は、バックエンド実装を用意して上記ビルド引数で API を指し示してください。
-
-ローカル開発 (任意)
-
-1. 依存インストール: `npm install`
-2. 開発サーバー: `npm run dev`
-   - デフォルト: コンポーネント内のモックデータを直接使用
-   - スタブ API: `.env.local` などで `VITE_USE_MOCK=false` を指定すると、Vite dev server 内の `/api/*` スタブが返るため、ブラウザのネットワークタブで API 風に確認できます（ポートは `VITE_PORT` の値/デフォルト 5173）。
-3. ビルド: `npm run build`
-
-モック切替
-
-- `src/lib/api.ts` で `VITE_USE_MOCK` 環境変数を参照します。
-- デフォルト: `true`（コンポーネント内でモックデータを直接使用）。
-- スタブ API: `VITE_USE_MOCK=false` でフロントが `fetch` を使い、Vite dev server 内の `/api/*` スタブルートにアクセスします。`VITE_API_BASE_URL` を変更しない限り `http://localhost:5173/api` が使われます。
-- 実 API をつなげる場合は `VITE_USE_MOCK=false` に加え、`VITE_API_BASE_URL` を実サーバーへ向けてください。
-
-Docker (フロントのみ)
-
-- ビルド: `docker build -f Dockerfile -t minecraft-dashboard-frontend .`
-- 実行: `docker run -p 5173:80 minecraft-dashboard-frontend`
-- ビルド時に `--build-arg VITE_API_BASE_URL` / `--build-arg VITE_PORT` で API エンドポイントやポートを上書き可能。
-
-環境変数サンプル
-- `.env.example` を参照してください。フロントで使うのは主に `VITE_API_BASE_URL`, `VITE_PORT`, `VITE_USE_MOCK` です。
-
-その他
-- `specification.md`: 仕様書
-- `ui-screens.md`: 画面要件メモ
-- 現時点で `docker-compose.yml` は削除しています。バックエンド/MC サーバーを追加する際に再検討してください。
+モックデータについて
+- `src/data/mock.ts` に scoreboard / プレイヤー / プレイ時間のモックを定義。
+- `VITE_USE_MOCK` が true（デフォルト）の場合、フロント内の API クライアントがモックを返します。
+- dev サーバー起動時は Vite プラグインが `/api/*` をスタブレスポンスとして返します。

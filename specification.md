@@ -38,6 +38,7 @@ Docker 上の Minecraft Java Vanilla サーバーを監視。Go + SQLite バッ�
 ### 3.6 プレイ時間の推移 (新規)
 - 人ごとに日次のプレイ時間をグラフ表示。「その日に何分プレイしたか」を 14〜30 日分返す API を用意し、プロフィール画面などで表示。
 - scoreboard `play_time` (tick) の差分を分に換算し、日次で永続化。オフラインでも履歴を参照可能。
+- 全プレイヤーの推移を 1 枚のグラフで比較するビューを用意し、ダッシュボードのプレイ時間カードから遷移できる。
 
 ## 4. 非機能要件
 - 想定ユーザー少数、軽量ポーリング (デフォルト 30 秒)。
@@ -142,12 +143,38 @@ scoreboard objectives add play_time minecraft.custom:minecraft.play_time "Play T
   ]
 }
 ```
+- プレイ時間 (全体比較): `GET /api/playtime/daily?days=14` 返却例
+```json
+[
+  {
+    "player": { "id": 1, "name": "sun5un", "uuid": "...", "online": true, "lastSeenAt": "", "firstSeenAt": "" },
+    "samples": [
+      { "date": "2025-11-11", "minutes": 42 },
+      { "date": "2025-11-12", "minutes": 0 }
+    ]
+  }
+]
+```
 - メトリクス (admin): `GET /api/metrics`, `POST /api/admin/metrics`, `PATCH /api/admin/metrics/{id}`, `DELETE /api/admin/metrics/{id}`
+- メトリクス履歴: `GET /api/metrics/{id}/history?days=30` 返却例
+```json
+[
+  {
+    "player": { "id": 1, "name": "sun5un", "uuid": "...", "online": true, "lastSeenAt": "", "firstSeenAt": "" },
+    "samples": [
+      { "date": "2025-11-11", "value": 1240 },
+      { "date": "2025-11-12", "value": 1260 }
+    ]
+  }
+]
+```
 - プロフィール: `GET /api/profile/me`, `PATCH /api/profile/me`, `GET /api/users/{id}/profile`, `GET /api/profile/me/playtime/daily?days=14` (自分用エイリアス)
 
-## 9. フロントエンド (React / Cloudflare Pages)
-- ルート: `/login`, `/dashboard`, `/players/:id`, `/admin/metrics`, `/profile`, `/users/:id`
-- ダッシュボード: ステータスカード、オンラインプレイヤー、主要メトリクスのランキング。
+- ルート: `/login`, `/dashboard`, `/players/:id`, `/metrics`, `/metrics/:id/history`, `/admin/metrics`, `/profile`, `/users/:id`
+- ダッシュボード: ステータスカード、オンラインプレイヤー、主要メトリクスのランキング。各メトリクスカードから日次推移グラフへリンク。
+- メトリクス一覧: `/metrics` で objective/単位/説明をカード表示し、履歴リンクを提供。
+- プレイ時間全体比較: `/metrics/playtime` で 30 / 90 / 180 / 360 日を取得し、日/週/月単位に再集計して表示。
+- メトリクス履歴: `/metrics/:id/history` で任意メトリクスの推移を表示（全プレイヤーを一枚に、日/週/月単位切替）。
 - プレイヤー詳細: プロフィール/ログイン履歴、scoreboard 値、プレイ時間グラフ。
 - プロフィール: 表示名・ひとこと・アバター編集 + プレイ時間スパークライン (読み取り専用)。
 - デフォルトアバターは `default.jpg`。テーマは明るめ + 空色(#b7e1ff) と枝色(#8b6b4a)、角丸大きめ、影は控えめ。

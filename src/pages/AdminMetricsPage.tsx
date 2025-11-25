@@ -9,7 +9,12 @@ type DraftMetric = Metric & { temporary?: boolean };
 export function AdminMetricsPage() {
   const { data: metrics, loading } = useAsync(getMetrics, []);
   const [rows, setRows] = useState<DraftMetric[]>([]);
-  const [form, setForm] = useState({ objectiveName: 'new_objective', displayName: '新しいメトリクス', unit: 'pt' });
+  const [form, setForm] = useState({
+    objectiveName: 'new_objective',
+    displayName: '新しいメトリクス',
+    description: 'scoreboard に追加予定のメトリクス',
+    unit: 'pt',
+  });
 
   useEffect(() => {
     if (metrics) setRows(metrics);
@@ -27,8 +32,8 @@ export function AdminMetricsPage() {
         id: Date.now(),
         objectiveName: form.objectiveName,
         displayName: form.displayName,
-        description: 'プレビュー用に追加されたモックメトリクス',
-        unit: form.unit,
+        description: form.description || 'プレビュー用に追加されたモックメトリクス',
+        unit: form.unit || 'pt',
         isEnabled: true,
         updatedAt: new Date().toISOString(),
         temporary: true,
@@ -46,7 +51,7 @@ export function AdminMetricsPage() {
       <Card title="追加" subtitle="objective は英小文字とアンダースコアのみを想定">
         <form onSubmit={handleAdd} className="grid" style={{ gap: 10 }}>
           <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 10 }}>
-            <div>
+            <div className="grid" style={{ gap: 6 }}>
               <label className="label" htmlFor="objective">
                 objective_name
               </label>
@@ -57,7 +62,7 @@ export function AdminMetricsPage() {
                 onChange={(e) => setForm((f) => ({ ...f, objectiveName: e.target.value }))}
               />
             </div>
-            <div>
+            <div className="grid" style={{ gap: 6 }}>
               <label className="label" htmlFor="displayName">
                 表示名
               </label>
@@ -68,11 +73,22 @@ export function AdminMetricsPage() {
                 onChange={(e) => setForm((f) => ({ ...f, displayName: e.target.value }))}
               />
             </div>
-            <div>
+            <div className="grid" style={{ gap: 6 }}>
               <label className="label" htmlFor="unit">
                 単位
               </label>
               <input id="unit" className="input" value={form.unit} onChange={(e) => setForm((f) => ({ ...f, unit: e.target.value }))} />
+            </div>
+            <div className="grid" style={{ gap: 6 }}>
+              <label className="label" htmlFor="description">
+                説明
+              </label>
+              <input
+                id="description"
+                className="input"
+                value={form.description}
+                onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
+              />
             </div>
           </div>
           <button className="btn btn-primary" type="submit">

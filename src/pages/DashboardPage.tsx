@@ -1,4 +1,5 @@
-﻿import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Card } from '../components/Card';
 import { StatusBadge } from '../components/StatusBadge';
 import { Avatar } from '../components/Avatar';
@@ -6,17 +7,13 @@ import { MetricBar } from '../components/MetricBar';
 import { LogoMark } from '../components/LogoMark';
 import { useAsync } from '../hooks/useAsync';
 import { getLeaderboard, getMetrics, getPlayers, getServerStatus } from '../lib/api';
+import type { LeaderboardRow } from '../lib/api';
 import type { Metric, Player } from '../lib/types';
 
-type LeaderRow = {
-  player: Player;
-  value: number;
-  collectedAt: string;
-  metric: Metric;
-};
+type LeaderRow = LeaderboardRow;
 
 function formatDateTime(value?: string) {
-  if (!value) return '—';
+  if (!value) return '?';
   return new Intl.DateTimeFormat('ja-JP', {
     dateStyle: 'medium',
     timeStyle: 'short',
@@ -36,9 +33,13 @@ export function DashboardPage() {
         metrics
           .filter((m) => m.isEnabled)
           .slice(0, 3)
-          .map(async (metric) => [metric.id, await getLeaderboard(metric.id)] as const),
+          .map(async (metric) => [metric.id, await getLeaderboard(metric.id)] as [number, LeaderRow[]]),
       );
-      setLeaders(Object.fromEntries(entries));
+      const mapped: Record<number, LeaderRow[]> = {};
+      entries.forEach(([metricId, rows]) => {
+        mapped[metricId] = rows;
+      });
+      setLeaders(mapped);
     })();
   }, [metrics]);
 
@@ -144,42 +145,58 @@ export function DashboardPage() {
           </div>
         </Card>
 
-        <Card title="メトリクスランキング" subtitle="scoreboard の上位プレイヤー">
+        <Card title="メトリクスランキング" subtitle="scoreboard の上位プレイヤー（カードを押すと履歴へ）">
           {metrics ? (
             <div className="grid" style={{ gap: 12 }}>
               {metrics
                 .filter((m) => m.isEnabled)
                 .slice(0, 3)
-                .map((metric) => (
-                  <div key={metric.id} className="glass-card" style={{ padding: 12 }}>
-                    <div className="card-header" style={{ marginBottom: 6 }}>
-                      <div>
-                        <div className="label" style={{ marginBottom: 2 }}>
-                          {metric.displayName}
+                .map((metric) => {
+                  const content = (
+                    <>
+                      <div className="card-header" style={{ marginBottom: 6 }}>
+                        <div>
+                          <div className="label" style={{ marginBottom: 2 }}>
+                            {metric.displayName}
+                          </div>
+                          <div className="hint">{metric.description}</div>
                         </div>
-                        <div className="hint">{metric.description}</div>
+                        <span className="pill">単位: {metric.unit}</span>
                       </div>
-                      <span className="pill">単位: {metric.unit}</span>
-                    </div>
-                    <div className="grid" style={{ gap: 8 }}>
-                      {(leaders[metric.id] || []).map((row) => (
-                        <div key={`${metric.id}-${row.player.id}`} className="surface-muted">
-                          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                            <Avatar name={row.player.name} size={42} />
-                            <div style={{ flex: 1 }}>
-                              <div style={{ fontWeight: 700 }}>{row.player.name}</div>
-                              <div className="hint">更新: {formatDateTime(row.collectedAt)}</div>
-                            </div>
-                            <div style={{ fontWeight: 800 }}>
-                              {row.value.toLocaleString()} {metric.unit}
+                      <div className="grid" style={{ gap: 8 }}>
+                        {(leaders[metric.id] || []).map((row) => (
+                          <div key={`${metric.id}-${row.player.id}`} className="surface-muted">
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                              <Avatar name={row.player.name} size={42} />
+                              <div style={{ flex: 1 }}>
+                                <div style={{ fontWeight: 700 }}>{row.player.name}</div>
+                                <div className="hint">更新: {formatDateTime(row.collectedAt)}</div>
+                              </div>
+                              <div style={{ fontWeight: 800 }}>
+                                {row.value.toLocaleString()} {metric.unit}
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      ))}
-                      {(leaders[metric.id] || []).length === 0 && <div className="muted">データなし</div>}
-                    </div>
-                  </div>
-                ))}
+                        ))}
+                        {(leaders[metric.id] || []).length === 0 && <div className="muted">データなし</div>}
+                      </div>
+                    </>
+                  );
+
+                  return (
+                    <Link
+                      key={metric.id}
+                      to={`/metrics/${metric.objectiveName}/history`}
+                      className="glass-card"
+                      style={{ padding: 12, textDecoration: 'none' }}
+                    >
+                      <div className="muted" style={{ fontSize: 12, marginBottom: 4 }}>
+                        クリックで日次推移を見る
+                      </div>
+                      {content}
+                    </Link>
+                  );
+                })}
             </div>
           ) : (
             <div className="muted">読み込み中...</div>
