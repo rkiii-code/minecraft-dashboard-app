@@ -1,4 +1,4 @@
-fimport { Metric, Player, PlayerScore, PlaytimeDaily, Profile, ServerStatus } from '../lib/types';
+import { Metric, Player, PlayerScore, PlaytimeDaily, Profile, ServerStatus } from '../lib/types';
 
 export const mockServerStatus: ServerStatus = {
   online: true,

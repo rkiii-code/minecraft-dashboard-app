@@ -53,3 +53,18 @@ export type PlaytimeDaily = {
   rangeDays: number;
   samples: PlaytimeSample[];
 };
+
+export type PlaytimeSeries = {
+  player: Player;
+  samples: PlaytimeSample[];
+};
+
+export type MetricHistorySample = {
+  date: string;
+  value: number;
+};
+
+export type MetricHistorySeries = {
+  player: Player;
+  samples: MetricHistorySample[];
+};

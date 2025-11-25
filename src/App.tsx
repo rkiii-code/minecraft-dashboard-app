@@ -8,6 +8,9 @@ import { PlayerDetailPage } from './pages/PlayerDetailPage';
 import { PlayersPage } from './pages/PlayersPage';
 import { ProfilePage } from './pages/ProfilePage';
 import { UserProfilePage } from './pages/UserProfilePage';
+import { PlaytimeOverviewPage } from './pages/PlaytimeOverviewPage';
+import { MetricHistoryPage } from './pages/MetricHistoryPage';
+import { MetricsOverviewPage } from './pages/MetricsOverviewPage';
 
 function Shell() {
   return (
@@ -27,6 +30,10 @@ export default function App() {
         <Route path="/players" element={<PlayersPage />} />
         <Route path="/players/:id" element={<PlayerDetailPage />} />
         <Route path="/admin/metrics" element={<AdminMetricsPage />} />
+        <Route path="/metrics" element={<MetricsOverviewPage />} />
+        <Route path="/metrics/playtime" element={<PlaytimeOverviewPage />} />
+        <Route path="/metrics/:id/history" element={<MetricHistoryPage />} />
+        <Route path="/metrics/play_time/history" element={<MetricHistoryPage objectiveName="play_time" />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/users/:id" element={<UserProfilePage />} />
       </Route>
