@@ -61,7 +61,9 @@ export async function getUserProfile(id: number): Promise<Profile | undefined> {
 }
 
 export async function getLeaderboard(metricId: number) {
-  if (!USE_MOCK) return [];
+  if (!USE_MOCK) {
+    return fetchJson(`/metrics/${metricId}/leaderboard`);
+  }
 
   const metric = mockMetrics.find((m) => m.id === metricId);
   if (!metric) return [];
