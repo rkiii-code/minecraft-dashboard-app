@@ -1,26 +1,50 @@
 ﻿import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { LogoMark } from '../components/LogoMark';
+import { useAuth } from '../context/AuthContext';
 
 export function LoginPage() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { login, isAuthenticated, isLoading: authLoading } = useAuth();
+
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (event: React.FormEvent) => {
+  // リダイレクト元のパスを取得
+  const from = (location.state as { from?: { pathname: string } })?.from?.pathname || '/dashboard';
+
+  // 既にログイン済みの場合はリダイレクト
+  if (authLoading) {
+    return (
+      <div style={{ minHeight: '100vh', display: 'grid', placeItems: 'center' }}>
+        <div className="card" style={{ textAlign: 'center', padding: 32 }}>
+          <div className="spinner" style={{ marginBottom: 16 }} />
+          <p>読み込み中...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (isAuthenticated) {
+    return <Navigate to={from} replace />;
+  }
+
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setLoading(true);
     setError('');
-    setTimeout(() => {
+
+    try {
+      await login(username, password);
+      navigate(from, { replace: true });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'ログインに失敗しました');
+    } finally {
       setLoading(false);
-      if (!username || !password) {
-        setError('ユーザー名とパスワードを入力してください');
-        return;
-      }
-      navigate('/dashboard');
-    }, 300);
+    }
   };
 
   return (
