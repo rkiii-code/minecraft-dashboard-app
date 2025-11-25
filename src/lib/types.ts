@@ -42,3 +42,14 @@ export type Profile = {
   avatarUrl?: string;
   role: 'user' | 'admin';
 };
+
+export type PlaytimeSample = {
+  date: string; // YYYY-MM-DD
+  minutes: number;
+};
+
+export type PlaytimeDaily = {
+  playerId: number;
+  rangeDays: number;
+  samples: PlaytimeSample[];
+};

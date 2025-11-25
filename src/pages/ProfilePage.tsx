@@ -1,14 +1,25 @@
-import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Avatar } from '../components/Avatar';
 import { Card } from '../components/Card';
+import { PlaytimeChart } from '../components/PlaytimeChart';
 import { useAsync } from '../hooks/useAsync';
-import { getProfileMe } from '../lib/api';
-import type { Profile } from '../lib/types';
+import { getPlayerPlaytimeDaily, getProfileMe } from '../lib/api';
+import type { PlaytimeDaily } from '../lib/types';
 
-type FormState = Pick<Profile, 'displayName' | 'bio' | 'avatarUrl'>;
+type FormState = {
+  displayName: string;
+  bio: string;
+  avatarUrl: string;
+};
 
 export function ProfilePage() {
-  const { data: profile } = useAsync(getProfileMe, []);
+  const { data: profile, loading: profileLoading } = useAsync(getProfileMe, []);
+  const { data: playtime, loading: playtimeLoading } = useAsync<PlaytimeDaily | null>(
+    () => (profile ? getPlayerPlaytimeDaily(profile.id, 14) : Promise.resolve(null)),
+    [profile?.id],
+  );
+  const navigate = useNavigate();
   const [form, setForm] = useState<FormState>({ displayName: '', bio: '', avatarUrl: '' });
   const [saved, setSaved] = useState(false);
 
@@ -24,18 +35,22 @@ export function ProfilePage() {
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
+    // API wiring is mocked in this demo.
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
   };
 
-  if (!profile) return <div className="muted">読み込み中...</div>;
+  if (profileLoading || !profile) return <div className="muted">プロフィールを読み込み中...</div>;
 
   return (
     <div className="grid" style={{ gap: 16 }}>
       <div>
-        <h1 className="page-title">Profile</h1>
-        <p className="page-subtitle">公開プロフィールとアバター。未設定ならデフォルトのしまえながを使用します。</p>
+        <h1 className="page-title">プロフィール</h1>
+        <p className="page-subtitle">
+          表示名・ひとこと・アバターを更新できます。プレイ時間の推移は scoreboard の play_time から自動集計されます。
+        </p>
       </div>
+
       <div className="card-grid">
         <Card title="編集" subtitle="表示名 / ひとこと / アバター URL">
           <form onSubmit={handleSubmit} className="grid" style={{ gap: 12 }}>
@@ -52,7 +67,7 @@ export function ProfilePage() {
             </div>
             <div>
               <label className="label" htmlFor="bio">
-                ひとこと (140 文字)
+                ひとこと (140 文字まで)
               </label>
               <textarea
                 id="bio"
@@ -66,7 +81,7 @@ export function ProfilePage() {
             </div>
             <div>
               <label className="label" htmlFor="avatar">
-                アバター URL (未入力ならデフォルト)
+                アバター URL (空ならデフォルトを使用)
               </label>
               <input
                 id="avatar"
@@ -76,14 +91,14 @@ export function ProfilePage() {
                 onChange={(e) => setForm((f) => ({ ...f, avatarUrl: e.target.value }))}
               />
             </div>
-            {saved && <div className="surface-muted">保存しました（モック）</div>}
+            {saved && <div className="surface-muted">保存しました (mock)</div>}
             <button className="btn btn-primary" type="submit">
-              保存
+              保存する
             </button>
           </form>
         </Card>
 
-        <Card title="プレビュー" subtitle="公開プロフィールの見え方">
+        <Card title="プレビュー" subtitle="公開時の見え方">
           <div className="glass-card" style={{ padding: 16, display: 'grid', gap: 10 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
               <Avatar name={form.displayName || profile.username} url={form.avatarUrl} size={70} />
@@ -92,9 +107,16 @@ export function ProfilePage() {
                 <div className="hint">@{profile.username}</div>
               </div>
             </div>
-            <div className="surface-muted">{form.bio || 'ひとこと未設定。デフォルトアバターが表示されます。'}</div>
+            <div className="surface-muted">{form.bio || 'ひとこと未設定'}</div>
             <div className="chip">role: {profile.role}</div>
+            <button className="btn btn-primary" type="button" onClick={() => navigate(`/players/${profile.id}`)}>
+              自分のプレイヤーダッシュボードへ
+            </button>
           </div>
+        </Card>
+
+        <Card title="プレイ時間の推移" subtitle="scoreboard play_time から日次集計 (14 日間)">
+          <PlaytimeChart samples={playtime?.samples ?? []} loading={playtimeLoading} />
         </Card>
       </div>
     </div>

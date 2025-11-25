@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+﻿import React, { useEffect, useMemo, useState } from 'react';
 import { Card } from '../components/Card';
 import { StatusBadge } from '../components/StatusBadge';
 import { Avatar } from '../components/Avatar';
@@ -56,31 +56,30 @@ export function DashboardPage() {
     <div className="grid" style={{ gap: 18 }}>
       <section className="hero">
         <div>
-          <p className="pill status-online" style={{ width: 'fit-content', marginBottom: 10 }}>
-            <span className="badge-dot" style={{ background: '#12a150' }} />
+          <p className={`pill ${status?.online ? 'status-online' : 'status-offline'}`} style={{ width: 'fit-content', marginBottom: 10 }}>
+            <span className="badge-dot" style={{ background: status?.online ? '#12a150' : '#6b7280' }} />
             {status?.online ? 'オンライン' : 'オフライン'}
           </p>
           <h1 className="page-title">サーバーのようす</h1>
           <p className="page-subtitle">
-            RCON から scoreboard をポーリングし、Cloudflare Pages で可視化。
-            モックデータで UI を先行実装しています。
+            RCON から scoreboard を取得し、Cloudflare Pages で可視化。軽量なダッシュボードでプレイヤーの活動をチェックできます。
           </p>
           <ul className="inline-list" style={{ marginTop: 14 }}>
-            <li className="chip">ポーリング間隔 30 秒</li>
-            <li className="chip">JWT 認証 / admin・user</li>
-            <li className="chip">しまえながテーマ</li>
+            <li className="chip">ポーリング 30 秒</li>
+            <li className="chip">JWT ログイン (admin / user)</li>
+            <li className="chip">プレイヤー・メトリクス可視化</li>
           </ul>
         </div>
         <div className="hero-illustration">
           <LogoMark size={80} />
           <div className="hint" style={{ marginTop: 10 }}>
-            Cloudflare Pages → /api/* → Go API → RCON
+            Cloudflare Pages → /api → Go API → RCON
           </div>
         </div>
       </section>
 
       <div className="card-grid">
-        <Card title="サーバーステータス" subtitle={status ? `最終取得: ${formatDateTime(status.lastCheckedAt)}` : undefined}>
+        <Card title="サーバーステータス" subtitle={status ? `最終更新: ${formatDateTime(status.lastCheckedAt)}` : undefined}>
           {status ? (
             <div className="grid" style={{ gap: 10 }}>
               <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 10 }}>
@@ -93,7 +92,7 @@ export function DashboardPage() {
                   <div style={{ fontWeight: 700 }}>{status.version}</div>
                 </div>
                 <div className="surface-muted">
-                  <div className="muted">プレイヤー</div>
+                  <div className="muted">プレイヤー数</div>
                   <div style={{ fontWeight: 800 }}>
                     {status.playersOnline} / {status.maxPlayers}
                   </div>
@@ -111,7 +110,7 @@ export function DashboardPage() {
           )}
         </Card>
 
-        <Card title="オンラインプレイヤー" subtitle="オンライン優先で並び替え">
+        <Card title="オンラインプレイヤー" subtitle="現在オンラインのメンバー">
           <div className="grid" style={{ gap: 10 }}>
             {onlinePlayers.map((player) => (
               <div
@@ -124,7 +123,7 @@ export function DashboardPage() {
                   <div style={{ fontWeight: 700 }}>{player.name}</div>
                   <div className="hint">{player.uuid}</div>
                 </div>
-                <StatusBadge online label="online" />
+                <StatusBadge online label="オンライン" />
               </div>
             ))}
             {onlinePlayers.length === 0 && <div className="muted">オンラインのプレイヤーはいません</div>}
@@ -145,7 +144,7 @@ export function DashboardPage() {
           </div>
         </Card>
 
-        <Card title="メトリクスランキング" subtitle="scoreboard をもとにした上位プレイヤー">
+        <Card title="メトリクスランキング" subtitle="scoreboard の上位プレイヤー">
           {metrics ? (
             <div className="grid" style={{ gap: 12 }}>
               {metrics
@@ -160,20 +159,20 @@ export function DashboardPage() {
                         </div>
                         <div className="hint">{metric.description}</div>
                       </div>
-                      <span className="pill">{metric.unit}</span>
+                      <span className="pill">単位: {metric.unit}</span>
                     </div>
                     <div className="grid" style={{ gap: 8 }}>
-                      {(leaders[metric.id] || []).slice(0, 3).map((row, index) => (
-                        <div key={row.player.id} style={{ display: 'grid', gridTemplateColumns: 'auto 1fr auto', gap: 10 }}>
-                          <span className="pill" style={{ background: '#eff7ff', borderColor: '#d7eaff' }}>
-                            #{index + 1}
-                          </span>
-                          <div>
-                            <div style={{ fontWeight: 700 }}>{row.player.name}</div>
-                            <div className="hint">{formatDateTime(row.collectedAt)}</div>
-                          </div>
-                          <div style={{ fontWeight: 800 }}>
-                            {row.value.toLocaleString()} {metric.unit}
+                      {(leaders[metric.id] || []).map((row) => (
+                        <div key={`${metric.id}-${row.player.id}`} className="surface-muted">
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                            <Avatar name={row.player.name} size={42} />
+                            <div style={{ flex: 1 }}>
+                              <div style={{ fontWeight: 700 }}>{row.player.name}</div>
+                              <div className="hint">更新: {formatDateTime(row.collectedAt)}</div>
+                            </div>
+                            <div style={{ fontWeight: 800 }}>
+                              {row.value.toLocaleString()} {metric.unit}
+                            </div>
                           </div>
                         </div>
                       ))}

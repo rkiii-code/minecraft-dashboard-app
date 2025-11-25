@@ -1,5 +1,5 @@
-import { mockMetrics, mockPlayers, mockProfileMe, mockProfiles, mockScores, mockServerStatus } from '../data/mock';
-import { Metric, Player, PlayerScore, Profile, ServerStatus } from './types';
+import { mockMetrics, mockPlayers, mockPlaytimeDaily, mockProfileMe, mockProfiles, mockScores, mockServerStatus } from '../data/mock';
+import { Metric, PlaytimeDaily, Player, PlayerScore, Profile, ServerStatus } from './types';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
 const USE_MOCK = (import.meta.env.VITE_USE_MOCK ?? 'true') !== 'false';
@@ -34,6 +34,15 @@ export async function getPlayer(id: number): Promise<Player | undefined> {
 export async function getPlayerScores(playerId: number): Promise<PlayerScore[]> {
   if (USE_MOCK) return delay(mockScores.filter((s) => s.playerId === playerId));
   return fetchJson(`/players/${playerId}/scores`);
+}
+
+export async function getPlayerPlaytimeDaily(playerId: number, days = 14): Promise<PlaytimeDaily | null> {
+  if (USE_MOCK) {
+    const item = mockPlaytimeDaily.find((p) => p.playerId === playerId);
+    if (!item) return delay(null);
+    return delay({ ...item, rangeDays: days, samples: item.samples.slice(-days) });
+  }
+  return fetchJson(`/players/${playerId}/playtime/daily?days=${days}`);
 }
 
 export async function getMetrics(): Promise<Metric[]> {

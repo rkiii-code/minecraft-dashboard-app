@@ -10,7 +10,7 @@ export function StatusBadge({ online, label }: StatusBadgeProps) {
   return (
     <span
       className={clsx('pill', online ? 'status-online' : 'status-offline')}
-      title={online ? 'Online' : 'Offline'}
+      title={online ? 'オンライン' : 'オフライン'}
     >
       <span
         className="badge-dot"
@@ -18,7 +18,7 @@ export function StatusBadge({ online, label }: StatusBadgeProps) {
           background: online ? '#12a150' : '#9ca3af',
         }}
       />
-      {label || (online ? 'Online' : 'Offline')}
+      {label || (online ? 'オンライン' : 'オフライン')}
     </span>
   );
 }

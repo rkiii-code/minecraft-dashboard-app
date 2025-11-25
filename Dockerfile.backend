@@ -1,0 +1,20 @@
+# syntax=docker/dockerfile:1
+
+FROM golang:1.22-alpine AS builder
+WORKDIR /app
+ENV CGO_ENABLED=0 GOOS=linux
+COPY go.mod go.sum ./
+RUN go mod download
+COPY . .
+RUN go build -o /app/bin/server ./cmd/server
+
+FROM alpine:3.20 AS runner
+WORKDIR /app
+RUN adduser -D -u 10001 appuser && apk add --no-cache ca-certificates curl
+COPY --from=builder /app/bin/server /usr/local/bin/server
+VOLUME /app/data
+ENV PORT=8080
+EXPOSE 8080
+USER appuser
+HEALTHCHECK --interval=30s --timeout=5s --retries=3 CMD curl -f http://localhost:${PORT}/healthz || exit 1
+CMD ["server"]

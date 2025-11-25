@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { Link } from 'react-router-dom';
 import { Card } from '../components/Card';
 import { Avatar } from '../components/Avatar';
@@ -8,7 +8,7 @@ import { getMetrics, getPlayers } from '../lib/api';
 import type { Player } from '../lib/types';
 
 function formatDateTime(value?: string) {
-  if (!value) return '—';
+  if (!value) return '--';
   return new Intl.DateTimeFormat('ja-JP', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }).format(
     new Date(value),
   );
@@ -21,8 +21,8 @@ export function PlayersPage() {
   return (
     <div className="grid" style={{ gap: 16 }}>
       <div>
-        <h1 className="page-title">Players</h1>
-        <p className="page-subtitle">オンライン状況とプロフィール。詳細は各カードから確認できます。</p>
+        <h1 className="page-title">プレイヤー一覧</h1>
+        <p className="page-subtitle">オンライン状況とプロフィール。カードを押すと詳細ダッシュボードへ移動します。</p>
       </div>
       <Card title="一覧" subtitle={`有効メトリクス: ${metrics?.filter((m) => m.isEnabled).length ?? 0} 件`}>
         <div className="card-grid">

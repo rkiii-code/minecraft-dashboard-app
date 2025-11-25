@@ -9,10 +9,10 @@ type AppLayoutProps = {
 };
 
 const NAV_LINKS = [
-  { to: '/dashboard', label: 'Dashboard' },
-  { to: '/players', label: 'Players' },
-  { to: '/admin/metrics', label: 'Admin' },
-  { to: '/profile', label: 'Profile' },
+  { to: '/dashboard', label: 'ダッシュボード' },
+  { to: '/players', label: 'プレイヤー' },
+  { to: '/admin/metrics', label: '管理' },
+  { to: '/profile', label: 'プロフィール' },
 ];
 
 export function AppLayout({ children }: AppLayoutProps) {
@@ -38,7 +38,7 @@ export function AppLayout({ children }: AppLayoutProps) {
           ))}
         </div>
         <Link to="/profile" style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-          <StatusBadge online label="online" />
+          <StatusBadge online label="オンライン" />
           <Avatar name="admin" size={42} />
         </Link>
       </nav>

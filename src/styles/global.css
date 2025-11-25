@@ -351,6 +351,39 @@ select {
   background: linear-gradient(180deg, #e4f3ff, #8ac7f6);
 }
 
+.playtime-chart {
+  background: linear-gradient(135deg, rgba(183, 225, 255, 0.12), rgba(255, 255, 255, 0.95));
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.chart-meta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.chart-meta .label {
+  font-size: 12px;
+}
+
+.chart-value {
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.chart-footer {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 8px;
+}
+
 .hint {
   font-size: 12px;
   color: var(--muted);

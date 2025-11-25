@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { LogoMark } from '../components/LogoMark';
 
@@ -42,9 +42,9 @@ export function LoginPage() {
                 <p className="tagline">Minecraft Server Monitor</p>
               </div>
             </div>
-            <h1 className="page-title">いったんフロントだけ作ろう</h1>
+            <h1 className="page-title">フロントのデモログイン</h1>
             <p className="page-subtitle">
-              ログインするとサーバー状況やプレイヤーのスコアをリアルタイムで確認できます。
+              ログインするとサーバー状況やプレイヤーのスコアを確認できます。
               Cloudflare Pages から Go API を叩くシンプル構成です。
             </p>
             <ul className="inline-list" style={{ marginTop: 16 }}>
@@ -91,7 +91,7 @@ export function LoginPage() {
                 {loading ? '接続中...' : 'ログイン'}
               </button>
               <div className="hint">
-                モックログインです。任意のユーザー名/パスワードでダッシュボードに遷移します。
+                モックログインです。任意のユーザー名とパスワードでダッシュボードに遷移します。
               </div>
             </form>
           </div>
