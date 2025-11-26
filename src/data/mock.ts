@@ -1,5 +1,53 @@
-import { Metric, Player, PlayerScore, PlaytimeDaily, Profile, ServerStatus } from '../lib/types';
+import { Metric, MockUser, Player, PlayerScore, PlaytimeDaily, Profile, ServerStatus } from '../lib/types';
 
+// ====================================
+// モックログインユーザー
+// ====================================
+// 動作確認用のテストアカウント
+// パスワードはモック用なので実際のセキュリティは不要
+export const mockUsers: MockUser[] = [
+  {
+    id: 1,
+    username: 'admin',
+    password: 'admin123',
+    displayName: '管理者',
+    role: 'admin',
+    avatarUrl: '',
+  },
+  {
+    id: 2,
+    username: 'user',
+    password: 'user123',
+    displayName: 'テストユーザー',
+    role: 'user',
+    avatarUrl: '',
+  },
+  {
+    id: 3,
+    username: 'sun5un',
+    password: 'password',
+    displayName: 'Sun Sun',
+    role: 'admin',
+    avatarUrl: '',
+  },
+  {
+    id: 4,
+    username: 'umi_bird',
+    password: 'password',
+    displayName: 'Umi Bird',
+    role: 'user',
+    avatarUrl: 'https://images.unsplash.com/photo-1528825871115-3581a5387919?w=200&auto=format&fit=crop',
+  },
+];
+
+// ユーザー名とパスワードでモックユーザーを検索
+export function findMockUser(username: string, password: string): MockUser | undefined {
+  return mockUsers.find((u) => u.username === username && u.password === password);
+}
+
+// ====================================
+// サーバーステータス
+// ====================================
 export const mockServerStatus: ServerStatus = {
   online: true,
   playersOnline: 3,

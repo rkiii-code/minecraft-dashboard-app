@@ -45,10 +45,10 @@ export function AdminMetricsPage() {
     <div className="grid" style={{ gap: 16 }}>
       <div>
         <h1 className="page-title">管理 / メトリクス</h1>
-        <p className="page-subtitle">scoreboard objective の追加・無効化。バックエンド接続まではモック操作です。</p>
+        <p className="page-subtitle">scoreboard objective の追加・有効/無効の切り替えができます。</p>
       </div>
 
-      <Card title="追加" subtitle="objective は英小文字とアンダースコアのみを想定">
+      <Card title="新規追加" subtitle="objective 名は英小文字とアンダースコアのみ">
         <form onSubmit={handleAdd} className="grid" style={{ gap: 10 }}>
           <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 10 }}>
             <div className="grid" style={{ gap: 6 }}>

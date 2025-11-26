@@ -1,5 +1,6 @@
 import React from 'react';
 import { Navigate, Outlet, Route, Routes } from 'react-router-dom';
+import { ProtectedRoute } from './components/ProtectedRoute';
 import { AppLayout } from './layout/AppLayout';
 import { AdminMetricsPage } from './pages/AdminMetricsPage';
 import { DashboardPage } from './pages/DashboardPage';
@@ -14,9 +15,11 @@ import { MetricsOverviewPage } from './pages/MetricsOverviewPage';
 
 function Shell() {
   return (
-    <AppLayout>
-      <Outlet />
-    </AppLayout>
+    <ProtectedRoute>
+      <AppLayout>
+        <Outlet />
+      </AppLayout>
+    </ProtectedRoute>
   );
 }
 
@@ -29,7 +32,14 @@ export default function App() {
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/players" element={<PlayersPage />} />
         <Route path="/players/:id" element={<PlayerDetailPage />} />
-        <Route path="/admin/metrics" element={<AdminMetricsPage />} />
+        <Route
+          path="/admin/metrics"
+          element={
+            <ProtectedRoute requiredRole="admin">
+              <AdminMetricsPage />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/metrics" element={<MetricsOverviewPage />} />
         <Route path="/metrics/playtime" element={<PlaytimeOverviewPage />} />
         <Route path="/metrics/:id/history" element={<MetricHistoryPage />} />

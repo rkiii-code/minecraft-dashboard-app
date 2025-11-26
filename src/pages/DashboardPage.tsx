@@ -63,19 +63,16 @@ export function DashboardPage() {
           </p>
           <h1 className="page-title">サーバーのようす</h1>
           <p className="page-subtitle">
-            RCON から scoreboard を取得し、Cloudflare Pages で可視化。軽量なダッシュボードでプレイヤーの活動をチェックできます。
+            サーバーの状態とプレイヤーの活動をリアルタイムでチェックできます。
           </p>
           <ul className="inline-list" style={{ marginTop: 14 }}>
-            <li className="chip">ポーリング 30 秒</li>
-            <li className="chip">JWT ログイン (admin / user)</li>
-            <li className="chip">プレイヤー・メトリクス可視化</li>
+            <li className="chip">オンライン状況</li>
+            <li className="chip">プレイヤー一覧</li>
+            <li className="chip">スコアランキング</li>
           </ul>
         </div>
         <div className="hero-illustration">
           <LogoMark size={80} />
-          <div className="hint" style={{ marginTop: 10 }}>
-            Cloudflare Pages → /api → Go API → RCON
-          </div>
         </div>
       </section>
 

@@ -6,6 +6,12 @@ dist/
 dist-ssr/
 .vite/
 
+# Compiled config (use .ts version)
+vite.config.js
+
+# Compiled JS from TypeScript (source is .ts/.tsx)
+src/**/*.js
+
 # Environment variables
 .env
 .env.*

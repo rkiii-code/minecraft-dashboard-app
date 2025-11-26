@@ -12,7 +12,7 @@ export function MetricsOverviewPage() {
     <div className="grid" style={{ gap: 16 }}>
       <div>
         <h1 className="page-title">メトリクス一覧</h1>
-        <p className="page-subtitle">scoreboard objective と単位、説明を確認し、カードを押して日次履歴へ移動できます。</p>
+        <p className="page-subtitle">カードを押して日次履歴へ移動できます。</p>
       </div>
 
       <Card title="メトリクス" subtitle={loading ? '読み込み中...' : `${metrics?.length ?? 0} 件`}>

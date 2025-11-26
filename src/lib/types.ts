@@ -43,6 +43,25 @@ export type Profile = {
   role: 'user' | 'admin';
 };
 
+// 認証用のユーザー型
+export type AuthUser = {
+  id: number;
+  username: string;
+  displayName: string;
+  role: 'user' | 'admin';
+  avatarUrl?: string;
+};
+
+// モックログイン用のユーザー定義
+export type MockUser = {
+  id: number;
+  username: string;
+  password: string;
+  displayName: string;
+  role: 'user' | 'admin';
+  avatarUrl?: string;
+};
+
 export type PlaytimeSample = {
   date: string; // YYYY-MM-DD
   minutes: number;
