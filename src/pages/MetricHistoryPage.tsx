@@ -80,9 +80,7 @@ export function MetricHistoryPage({ objectiveName }: { objectiveName?: string })
     <div className="grid" style={{ gap: 16 }}>
       <div style={{ textAlign: 'center' }}>
         <h1 className="page-title">{targetMetric ? `${targetMetric.displayName} の履歴` : 'メトリクス履歴'}</h1>
-        <p className="page-subtitle">
-          scoreboard の値を日次で積み上げ、プレイヤーごとの推移をまとめて表示します。
-        </p>
+        <p className="page-subtitle">プレイヤーごとの推移をまとめて表示します。</p>
         <div className="inline-list" style={{ marginTop: 10, justifyContent: 'center' }}>
           <Link to="/dashboard" className="pill">
             ダッシュボードへ戻る
@@ -96,7 +94,7 @@ export function MetricHistoryPage({ objectiveName }: { objectiveName?: string })
       <div style={{ display: 'flex', justifyContent: 'center' }}>
         <Card
           title={targetMetric ? `${targetMetric.displayName} / ${targetMetric.unit}` : 'メトリクス履歴'}
-          subtitle={`${resolution === 'day' ? '日次(2週)' : resolution === 'week' ? '週次(3ヶ月)' : '月次(1年)'} / モックデータ`}
+          subtitle={`${resolution === 'day' ? '日次(2週)' : resolution === 'week' ? '週次(3ヶ月)' : '月次(1年)'}`}
           action={
             <div className="inline-list">
               {(['day', 'week', 'month'] as Resolution[]).map((value) => (

@@ -66,15 +66,14 @@ export function LoginPage() {
                 <p className="tagline">Minecraft Server Monitor</p>
               </div>
             </div>
-            <h1 className="page-title">フロントのデモログイン</h1>
+            <h1 className="page-title">ログイン</h1>
             <p className="page-subtitle">
               ログインするとサーバー状況やプレイヤーのスコアを確認できます。
-              Cloudflare Pages から Go API を叩くシンプル構成です。
             </p>
             <ul className="inline-list" style={{ marginTop: 16 }}>
-              <li className="chip">JWT / admin, user ロール</li>
-              <li className="chip">RCON 経由で scoreboard 取得</li>
-              <li className="chip">しまえながテーマ</li>
+              <li className="chip">サーバーステータス</li>
+              <li className="chip">プレイヤー情報</li>
+              <li className="chip">スコアランキング</li>
             </ul>
           </div>
           <div className="glass-card" style={{ padding: 18 }}>
@@ -114,9 +113,6 @@ export function LoginPage() {
               <button className="btn btn-primary" type="submit" disabled={loading}>
                 {loading ? '接続中...' : 'ログイン'}
               </button>
-              <div className="hint">
-                モックログインです。任意のユーザー名とパスワードでダッシュボードに遷移します。
-              </div>
             </form>
           </div>
         </div>

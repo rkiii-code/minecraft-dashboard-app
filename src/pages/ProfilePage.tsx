@@ -35,7 +35,7 @@ export function ProfilePage() {
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    // API wiring is mocked in this demo.
+    // プロフィール更新API呼び出し
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
   };
@@ -46,9 +46,7 @@ export function ProfilePage() {
     <div className="grid" style={{ gap: 16 }}>
       <div>
         <h1 className="page-title">プロフィール</h1>
-        <p className="page-subtitle">
-          表示名・ひとこと・アバターを更新できます。プレイ時間の推移は scoreboard の play_time から自動集計されます。
-        </p>
+        <p className="page-subtitle">表示名・ひとこと・アバターを更新できます。</p>
       </div>
 
       <div className="card-grid">

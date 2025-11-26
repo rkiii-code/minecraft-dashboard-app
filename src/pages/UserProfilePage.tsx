@@ -30,9 +30,6 @@ export function UserProfilePage() {
         </div>
         <div className="divider" />
         <div className="surface-muted">{profile.bio || 'ひとこと未設定'}</div>
-        <div className="hint" style={{ marginTop: 8 }}>
-          メールなどの機微情報は表示しません。ロールは非表示です。
-        </div>
       </Card>
     </div>
   );

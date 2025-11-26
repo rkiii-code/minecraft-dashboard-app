@@ -63,7 +63,7 @@ export function PlaytimeOverviewPage() {
     <div className="grid" style={{ gap: 16 }}>
       <div style={{ textAlign: 'center' }}>
         <h1 className="page-title">プレイ時間の詳細</h1>
-        <p className="page-subtitle">scoreboard play_time を日次集計し、全プレイヤーの推移をひとつの大きなグラフで表示します。</p>
+        <p className="page-subtitle">全プレイヤーのプレイ時間の推移を確認できます。</p>
         <div className="inline-list" style={{ marginTop: 10, justifyContent: 'center' }}>
           <Link to="/dashboard" className="pill">
             ダッシュボードへ戻る
@@ -74,7 +74,7 @@ export function PlaytimeOverviewPage() {
       <div style={{ display: 'flex', justifyContent: 'center' }}>
         <Card
           title="日次プレイ時間（全体）"
-          subtitle={`${resolution === 'day' ? '日' : resolution === 'week' ? '週' : '月'} 単位 / モックデータ`}
+          subtitle={`${resolution === 'day' ? '日' : resolution === 'week' ? '週' : '月'} 単位`}
           action={
             <div className="inline-list">
               {(['day', 'week', 'month'] as Resolution[]).map((value) => (
